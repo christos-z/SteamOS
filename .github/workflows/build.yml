@@ -214,7 +214,7 @@ jobs:
             fi
             echo "SOURCE_IMAGE_VERSION=$ver" >> $GITHUB_ENV
 
-            skopeo inspect docker://${{ env.IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor }}-${{ matrix.fedora_version }} > akmods.json
+            skopeo inspect docker://${{ env.UBLUE_IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor }}-${{ matrix.fedora_version }} > akmods.json
             linux=$(jq -r '.Labels["ostree.linux"]' akmods.json)
             if [ -z "$linux" ] || [ "null" = "$linux" ]; then
               echo "inspected image linux version must not be empty or null"
