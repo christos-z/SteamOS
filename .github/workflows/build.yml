@@ -50,12 +50,12 @@ jobs:
       fail-fast: false
       matrix:
         base_image_flavor: [main]
-        # base_name: [bazzite, bazzite-deck, bazzite-nvidia]
-        base_name: [bazzite-deck]
-        # base_image_name: [kinoite, silverblue]
-        base_image_name: [silverblue]
-        # target_image_flavor: [main, asus]
-        target_image_flavor: [main]
+        base_name: [bazzite, bazzite-deck, bazzite-nvidia]
+        # base_name: [bazzite-deck]
+        base_image_name: [kinoite, silverblue]
+        # base_image_name: [silverblue]
+        target_image_flavor: [main, asus]
+        # target_image_flavor: [main]
         fedora_version: [40]
         include:
           - fedora_version: 40
@@ -253,7 +253,7 @@ jobs:
           build-args: |
             IMAGE_NAME=${{ env.IMAGE_NAME }}
             IMAGE_FLAVOR=${{ env.IMAGE_FLAVOR }}
-            IMAGE_VENDOR=ublue-os
+            IMAGE_VENDOR=${{ github.repository_owner }}
             BASE_IMAGE_NAME=${{ matrix.base_image_name }}
             BASE_IMAGE_FLAVOR=${{ matrix.base_image_flavor }}
             FEDORA_VERSION=${{ matrix.fedora_version }}
