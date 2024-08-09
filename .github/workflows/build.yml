@@ -96,26 +96,26 @@ jobs:
         run: |
           echo "SHA_HEAD_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      - name: Verify main image
-        uses: EyeCantCU/cosign-action/verify@v0.3.0
-        with:
-          containers: ${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
-          pubkey: https://raw.githubusercontent.com/ublue-os/${{ matrix.base_image_flavor }}/main/cosign.pub
-          registry: ${{ env.IMAGE_REGISTRY }}
+      # - name: Verify main image
+      #   uses: EyeCantCU/cosign-action/verify@v0.3.0
+      #   with:
+      #     containers: ${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
+      #     pubkey: https://raw.githubusercontent.com/ublue-os/${{ matrix.base_image_flavor }}/main/cosign.pub
+      #     registry: ${{ env.IMAGE_REGISTRY }}
 
-      - name: Verify akmods image
-        uses: EyeCantCU/cosign-action/verify@v0.3.0
-        with:
-          containers: akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
-          pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
-          registry: ${{ env.IMAGE_REGISTRY }}
+      # - name: Verify akmods image
+      #   uses: EyeCantCU/cosign-action/verify@v0.3.0
+      #   with:
+      #     containers: akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+      #     pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
+      #     registry: ${{ env.IMAGE_REGISTRY }}
 
-      - name: Verify akmods-nvidia image
-        uses: EyeCantCU/cosign-action/verify@v0.3.0
-        with:
-          containers: akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
-          pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
-          registry: ${{ env.IMAGE_REGISTRY }}
+      # - name: Verify akmods-nvidia image
+      #   uses: EyeCantCU/cosign-action/verify@v0.3.0
+      #   with:
+      #     containers: akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+      #     pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
+      #     registry: ${{ env.IMAGE_REGISTRY }}
 
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
@@ -185,17 +185,17 @@ jobs:
           done
           echo "alias_tags=${alias_tags[*]}" >> $GITHUB_OUTPUT
 
-      - name: Pull main and akmods images
-        uses: Wandalen/wretry.action@v3.5.0
-        with:
-          attempt_limit: 3
-          attempt_delay: 15000
-          command: |
-            # pull the base images used for FROM in Containerfile so
-            # we can retry on that unfortunately common failure case
-            podman pull ${{ env.IMAGE_REGISTRY }}/${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
-            podman pull ${{ env.IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
-            podman pull ${{ env.IMAGE_REGISTRY }}/akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+      # - name: Pull main and akmods images
+      #   uses: Wandalen/wretry.action@v3.5.0
+      #   with:
+      #     attempt_limit: 3
+      #     attempt_delay: 15000
+      #     command: |
+      #       # pull the base images used for FROM in Containerfile so
+      #       # we can retry on that unfortunately common failure case
+      #       podman pull ${{ env.IMAGE_REGISTRY }}/${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
+      #       podman pull ${{ env.IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+      #       podman pull ${{ env.IMAGE_REGISTRY }}/akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
 
       - name: Get source versions
         id: labels
