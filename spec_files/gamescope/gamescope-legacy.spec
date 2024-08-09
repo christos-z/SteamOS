@@ -22,6 +22,7 @@ Patch1:         v2-0001-always-send-ctrl-1-2-to-steam-s-wayland-session.patch
 
 # ChimeraOS
 Patch2:         legacy-720p.patch
+Patch3:         30hz-70hz.patch
 
 BuildRequires:  meson >= 0.54.0
 BuildRequires:  ninja-build
