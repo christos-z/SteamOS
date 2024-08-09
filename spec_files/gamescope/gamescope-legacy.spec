@@ -15,14 +15,14 @@ Source0:        %{url}/archive/%{version}/gamescope-%{version}.tar.gz
 Source1:        stb.pc
 Source2:        https://github.com/Joshua-Ashton/reshade/archive/%{reshade_commit}/reshade-%{reshade_shortcommit}.tar.gz
 
-Patch0:         0001-cstdint.patch
+Patch0:         30hz-70hz.patch
+Patch1:         0001-cstdint.patch
 
 # https://hhd.dev/
-Patch1:         v2-0001-always-send-ctrl-1-2-to-steam-s-wayland-session.patch
+Patch2:         v2-0001-always-send-ctrl-1-2-to-steam-s-wayland-session.patch
 
 # ChimeraOS
-Patch2:         legacy-720p.patch
-Patch3:         30hz-70hz.patch
+Patch3:         legacy-720p.patch
 
 BuildRequires:  meson >= 0.54.0
 BuildRequires:  ninja-build
