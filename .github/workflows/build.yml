@@ -31,7 +31,6 @@ on:
   workflow_dispatch:
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
-  UBLUE_IMAGE_REGISTRY: ghcr.io/ublue-os
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
@@ -51,11 +50,8 @@ jobs:
       matrix:
         base_image_flavor: [main]
         base_name: [bazzite, bazzite-deck, bazzite-nvidia]
-        # base_name: [bazzite-deck]
         base_image_name: [kinoite, silverblue]
-        # base_image_name: [silverblue]
         target_image_flavor: [main, asus]
-        # target_image_flavor: [main]
         fedora_version: [40]
         include:
           - fedora_version: 40
@@ -100,26 +96,26 @@ jobs:
         run: |
           echo "SHA_HEAD_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
-      # - name: Verify main image
-      #   uses: EyeCantCU/cosign-action/verify@v0.3.0
-      #   with:
-      #     containers: ${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
-      #     pubkey: https://raw.githubusercontent.com/ublue-os/${{ matrix.base_image_flavor }}/main/cosign.pub
-      #     registry: ${{ env.IMAGE_REGISTRY }}
+      - name: Verify main image
+        uses: EyeCantCU/cosign-action/verify@v0.3.0
+        with:
+          containers: ${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
+          pubkey: https://raw.githubusercontent.com/ublue-os/${{ matrix.base_image_flavor }}/main/cosign.pub
+          registry: ${{ env.IMAGE_REGISTRY }}
 
-      # - name: Verify akmods image
-      #   uses: EyeCantCU/cosign-action/verify@v0.3.0
-      #   with:
-      #     containers: akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
-      #     pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
-      #     registry: ${{ env.IMAGE_REGISTRY }}
+      - name: Verify akmods image
+        uses: EyeCantCU/cosign-action/verify@v0.3.0
+        with:
+          containers: akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+          pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
+          registry: ${{ env.IMAGE_REGISTRY }}
 
-      # - name: Verify akmods-nvidia image
-      #   uses: EyeCantCU/cosign-action/verify@v0.3.0
-      #   with:
-      #     containers: akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
-      #     pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
-      #     registry: ${{ env.IMAGE_REGISTRY }}
+      - name: Verify akmods-nvidia image
+        uses: EyeCantCU/cosign-action/verify@v0.3.0
+        with:
+          containers: akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+          pubkey: https://raw.githubusercontent.com/ublue-os/akmods/main/cosign.pub
+          registry: ${{ env.IMAGE_REGISTRY }}
 
       # Checkout push-to-registry action GitHub repository
       - name: Checkout Push to Registry action
@@ -197,9 +193,9 @@ jobs:
           command: |
             # pull the base images used for FROM in Containerfile so
             # we can retry on that unfortunately common failure case
-            podman pull ${{ env.UBLUE_IMAGE_REGISTRY }}/${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
-            podman pull ${{ env.UBLUE_IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
-            podman pull ${{ env.UBLUE_IMAGE_REGISTRY }}/akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+            podman pull ${{ env.IMAGE_REGISTRY }}/${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }}
+            podman pull ${{ env.IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
+            podman pull ${{ env.IMAGE_REGISTRY }}/akmods-nvidia:${{ matrix.kernel_flavor}}-${{ matrix.fedora_version }}
 
       - name: Get source versions
         id: labels
@@ -209,7 +205,7 @@ jobs:
           attempt_delay: 15000
           command: |
             set -eo pipefail
-            skopeo inspect docker://${{ env.UBLUE_IMAGE_REGISTRY }}/${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }} > source.json
+            skopeo inspect docker://${{ env.IMAGE_REGISTRY }}/${{ matrix.base_image_name }}-${{ matrix.base_image_flavor }}:${{ matrix.fedora_version }} > source.json
             ver=$(jq -r '.Labels["org.opencontainers.image.version"]' source.json)
             if [ -z "$ver" ] || [ "null" = "$ver" ]; then
               echo "inspected image version must not be empty or null"
@@ -217,7 +213,7 @@ jobs:
             fi
             echo "SOURCE_IMAGE_VERSION=$ver" >> $GITHUB_ENV
 
-            skopeo inspect docker://${{ env.UBLUE_IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor }}-${{ matrix.fedora_version }} > akmods.json
+            skopeo inspect docker://${{ env.IMAGE_REGISTRY }}/akmods:${{ matrix.kernel_flavor }}-${{ matrix.fedora_version }} > akmods.json
             linux=$(jq -r '.Labels["ostree.linux"]' akmods.json)
             if [ -z "$linux" ] || [ "null" = "$linux" ]; then
               echo "inspected image linux version must not be empty or null"
