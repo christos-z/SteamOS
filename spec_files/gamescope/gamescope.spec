@@ -11,7 +11,7 @@ Release:        1.bazzite
 Summary:        Micro-compositor for video games on Wayland
 
 License:        BSD
-URL:            https://github.com/ValveSoftware/gamescope
+URL:            https://github.com/christos-z/gamescope
 
 # Create stb.pc to satisfy dependency('stb')
 Source0:        stb.pc
