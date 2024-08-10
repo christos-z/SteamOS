@@ -3,15 +3,15 @@
 %global _default_patch_fuzz 2
 %global build_timestamp %(date +"%Y%m%d")
 %global toolchain clang
-%global gamescope_tag 3.14.29
+%global gamescope_tag 3.14.28
 
 Name:           gamescope
 Version:        100.%{gamescope_tag}
-Release:        1.bazzitey
+Release:        1.deck
 Summary:        Micro-compositor for video games on Wayland
 
 License:        BSD
-URL:            https://github.com/christos-z/gamescopey
+URL:            https://github.com/christos-z/gamescope
 
 # Create stb.pc to satisfy dependency('stb')
 Source0:        stb.pc
@@ -19,12 +19,11 @@ Source0:        stb.pc
 Patch0:         0001-cstdint.patch
 
 # https://github.com/ChimeraOS/gamescope
-Patch1:         chimeraos.patch
 # https://hhd.dev/
-Patch2:         disable-steam-touch-click-atom.patch
-Patch3:         v2-0001-always-send-ctrl-1-2-to-steam-s-wayland-session.patch
+Patch1:         disable-steam-touch-click-atom.patch
+Patch2:         v2-0001-always-send-ctrl-1-2-to-steam-s-wayland-session.patch
 # https://github.com/ValveSoftware/gamescope/issues/1369
-Patch4:         revert-299bc34.patch
+Patch3:         revert-299bc34.patch
 
 BuildRequires:  meson >= 0.54.0
 BuildRequires:  ninja-build
@@ -96,7 +95,7 @@ Summary:	libs for %{name}
 %summary
 
 %prep
-git clone --depth 1 --branch %{gamescope_tag} %{url}.git
+git clone --depth 1 %{url}.git
 cd gamescope
 git submodule update --init --recursive
 mkdir -p pkgconfig
